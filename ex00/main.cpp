@@ -7,7 +7,7 @@ int main(int argc, char **argv) {
     }
 
     try {
-        BitcoinExchange exchange("bitcoin_data.csv");
+        BitcoinExchange exchange("data.csv");
 
         std::ifstream inputFile(argv[1]);
         if (!inputFile.is_open()) {
@@ -19,14 +19,28 @@ int main(int argc, char **argv) {
         while (std::getline(inputFile, line)) {
             std::istringstream ss(line);
             std::string date, valueStr;
+
+            // 確保正確格式 (date | value)
             if (std::getline(ss, date, '|') && std::getline(ss, valueStr)) {
-                float value = std::atof(valueStr.c_str());
-                if (value < 0 || value > 1000) {
-                    std::cerr << "Error: invalid value: " << value << std::endl;
-                    continue;
+                date.erase(date.find_last_not_of(" \n\r\t") + 1); // 去除日期尾部空白
+                valueStr.erase(0, valueStr.find_first_not_of(" \n\r\t")); // 去除數值前的空白
+                
+                // 確認日期格式是否正確
+                if (exchange.check_date(date)) {
+                    float value = std::atof(valueStr.c_str());
+                    
+                    // 確認 value 是否在有效範圍內
+                    if (value < 0 || value > 1000) {
+                        std::cerr << "Error: invalid value: " << value << std::endl;
+                        continue;
+                    }
+                    
+                    // 獲取對應日期的匯率並計算
+                    float rate = exchange.getExchangeRate(date);
+                    std::cout << date << " => " << value << " = " << value * rate << std::endl;
+                } else {
+                    std::cerr << "Error: invalid date format => " << date << std::endl;
                 }
-                float rate = exchange.getExchangeRate(date);
-                std::cout << date << " => " << value << " = " << value * rate << std::endl;
             } else {
                 std::cerr << "Error: invalid input format." << std::endl;
             }

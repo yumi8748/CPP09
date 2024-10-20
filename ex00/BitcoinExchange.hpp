@@ -19,6 +19,7 @@ class BitcoinExchange
 
 		BitcoinExchange(const std::string &file);
 		float getExchangeRate(const std::string &date) const;
+		bool check_date(const std::string &date);
 	
 	private:
 

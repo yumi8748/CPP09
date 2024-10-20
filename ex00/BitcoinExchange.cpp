@@ -71,6 +71,37 @@ void	BitcoinExchange::loadFile(const std::string &fileName)
 	file.close();
 }
 
+bool BitcoinExchange::check_date(const std::string &date)
+{
+	if (date.size() != 10 || date[4] != '-' || date[7] != '-') {
+        return false;
+    }
+
+    int year = std::atoi(date.substr(0, 4).c_str());
+    int month = std::atoi(date.substr(5, 2).c_str());
+    int day = std::atoi(date.substr(8, 2).c_str());
+
+    if (year < 1000 || year > 9999) {
+        return false;
+    }
+    if (month < 1 || month > 12) {
+        return false;
+    }
+
+    int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    // check leap year
+    if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+        days_in_month[1] = 29;
+    }
+
+    if (day < 1 || day > days_in_month[month - 1]) {
+        return false;
+    }
+
+    return true;
+}
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
