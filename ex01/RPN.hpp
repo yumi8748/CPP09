@@ -4,6 +4,7 @@
 # include <iostream>
 # include <string>
 # include <sstream>
+# include <stack>
 
 class RPN
 {
@@ -19,7 +20,7 @@ class RPN
 	private:
 		bool isNumber(const std::string &token);
 		bool isOperator(const std::string &input);
-		
+		int calculation(int v1, int v2, std::string &oper);
 };
 
 #endif /* ************************************************************* RPN_H */

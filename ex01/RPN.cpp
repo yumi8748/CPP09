@@ -41,30 +41,55 @@ RPN &				RPN::operator=( RPN const & rhs )
 ** --------------------------------- METHODS ----------------------------------
 */
 
-bool isNumber(const std::string &token)
+int RPN::calculation(int v1, int v2, std::string &oper)
+{
+	if (oper == "+")
+		return (v1 + v2);
+	if (oper == "-")
+		return (v1 - v2);
+	if (oper == "/")
+	{
+		if (v2 == 0)
+			throw (std::runtime_error("Error: divided by 0 not allowed."));
+		return (v1 / v2);
+	}
+	if (oper == "*")
+		return (v1 * v2);
+	throw (std::runtime_error("Error: unknown operator."));
+}
+
+bool RPN::isNumber(const std::string &token)
 {
 	if (token.size() == 1 && isdigit(token[0]))
 		return (true);
 	return (false);
 }
 
-bool isOperator(const std::string &token)
+bool RPN::isOperator(const std::string &token)
 {
 	if (token == "+" || token == "-" || token == "/" || token == "*")
 		return (true);
 	return (false);
 }
 
-int	evaluate_rpn(std::string &input)
+int	RPN::evaluate_rpn(std::string &input)
 {
 	std::istringstream ss(input);
-	std::string tokens;
-	//stack
+	std::string token;
+	std::stack<int> values; //stack
 
-	while (ss >> tokens)
+	while (ss >> token)
 	{
-		if (std::isdigit(tokens[0])) //0-9
-			
+		if (std::isdigit(token[0])) //0-9
+			values.push(std::atoi(token.c_str()));
+		else if (isOperator(token))
+		{
+			if (values.size() < 2)
+				std::cerr << ("Error:　insufficient values for operation.") << std::endl;
+			int v2 = values.top(); values.pop();
+			int v1 = values.top(); values.pop();
+			int res = calculation(v1, v2, token); //continue here
+		}
 	}
 
 }
