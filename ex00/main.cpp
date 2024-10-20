@@ -1,7 +1,7 @@
 # include "BitcoinExchange.hpp"
 
-int main(int argc, char **argv) {
-    if (argc != 2) {
+int main(int ac, char **av) {
+    if (ac != 2) {
         std::cerr << "Error: incorrect number of arguments." << std::endl;
         return 1;
     }
@@ -9,7 +9,7 @@ int main(int argc, char **argv) {
     try {
         BitcoinExchange exchange("data.csv");
 
-        std::ifstream inputFile(argv[1]);
+        std::ifstream inputFile(av[1]);
         if (!inputFile.is_open()) {
             std::cerr << "Error: could not open file." << std::endl;
             return 1;
