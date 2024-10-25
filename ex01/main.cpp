@@ -8,7 +8,8 @@ int main(int ac, char **av)
         return (1);
     }
     try{
-        int res = evaluate_rpn(av[1]);
+		// RPN rpn;
+        int res = RPN::evaluate_rpn(av[1]);
         std::cout << res << std::endl;
     }catch(std::exception &e){
         std::cerr << e.what() << std::endl;

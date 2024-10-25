@@ -10,6 +10,7 @@ RPN::RPN()
 
 RPN::RPN( const RPN & src )
 {
+	*this = src;
 }
 
 
@@ -28,10 +29,10 @@ RPN::~RPN()
 
 RPN &				RPN::operator=( RPN const & rhs )
 {
-	//if ( this != &rhs )
-	//{
-		//this->_value = rhs.getValue();
-	//}
+	if ( this != &rhs )
+	{
+		return *this;
+	}
 	return *this;
 }
 
@@ -72,7 +73,7 @@ bool RPN::isOperator(const std::string &token)
 	return (false);
 }
 
-int	RPN::evaluate_rpn(std::string &input)
+int	RPN::evaluate_rpn(const std::string &input)
 {
 	std::istringstream ss(input);
 	std::string token;
@@ -80,18 +81,23 @@ int	RPN::evaluate_rpn(std::string &input)
 
 	while (ss >> token)
 	{
-		if (std::isdigit(token[0])) //0-9
+		if (isNumber(token)) //0-9
 			values.push(std::atoi(token.c_str()));
 		else if (isOperator(token))
 		{
 			if (values.size() < 2)
-				std::cerr << ("Error:　insufficient values for operation.") << std::endl;
+				throw (std::runtime_error("Error:　insufficient values for operation."));
 			int v2 = values.top(); values.pop();
 			int v1 = values.top(); values.pop();
-			int res = calculation(v1, v2, token); //continue here
+			int res = calculation(v1, v2, token);
+			values.push(res);
 		}
+		else
+			throw (std::runtime_error("Error: invalid input."));
 	}
-
+	if (values.size() != 1)
+		throw (std::runtime_error("Error: invalid input."));
+	return (values.top());
 }
 
 /*
