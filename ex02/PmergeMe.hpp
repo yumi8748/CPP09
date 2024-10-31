@@ -5,20 +5,20 @@
 # include <string>
 # include <vector>
 # include <deque>
+# include <chrono>
+# include <algorithm>
+# include <iomanip>
 
-template <typename T>
 class PmergeMe
 {
-
 	public:
-
 		PmergeMe();
 		PmergeMe( PmergeMe const & src );
 		~PmergeMe();
 		PmergeMe(char *av[]);
-		PmergeMe &		operator=( PmergeMe const & rhs );
+		PmergeMe &		operator=( PmergeMe const & src );
 
-		void	parseInput(const);
+		void	parseInput(char *av[]);
 		void	sortVector();
 		void	sortDeque();
 
@@ -30,8 +30,11 @@ class PmergeMe
 	private:
 		std::vector<int> vec;
 		std::deque<int> deq;
+		double timeVector;
+        double timeDeque;
 
+        void mergeInsertSort(std::vector<int>& container);
+        void mergeInsertSort(std::deque<int>& container);
 };
-
 
 #endif /* ******************************************************** PMERGEME_H */
