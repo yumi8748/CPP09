@@ -35,6 +35,9 @@ class PmergeMe
 
         void mergeInsertSort(std::vector<int>& container);
         void mergeInsertSort(std::deque<int>& container);
+		std::vector<int> getJacobsthal(int n);
+		template <typename T>
+    	void execInsert(T& sorted, const T& tmp);
 };
 
 #endif /* ******************************************************** PMERGEME_H */

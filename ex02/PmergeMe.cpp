@@ -108,6 +108,70 @@ void	PmergeMe::printTimeDeque() const
 		<< std::fixed << std::setprecision(5) << timeDeque << " us" << std::endl;
 }
 
+std::vector<int> PmergeMe::getJacobsthal(int n)
+{
+	// std::vector<int> sequence;
+    // int j1 = 0, j2 = 1;
+
+    // while (j2 <= n)
+	// {
+    //     sequence.push_back(j2);
+    //     int j_next = j2 + 2 * j1;
+    //     j1 = j2;
+    //     j2 = j_next;
+	// }
+	// return sequence;
+
+	std::vector<int> sequence;
+    
+    // 生成 Jacobsthal 數列直到不超過 n
+    int j0 = 0; // J(0)
+    int j1 = 1; // J(1)
+
+    if (n >= j0) sequence.push_back(j0); // 如果 n >= J(0)，則添加 J(0)
+    if (n >= j1) sequence.push_back(j1); // 如果 n >= J(1)，則添加 J(1)
+
+    // 使用迴圈計算後續的 Jacobsthal 數
+    int j_next;
+    for (int i = 2; ; i++) {
+        j_next = j1 + 2 * j0; // J(n) = J(n-1) + 2 * J(n-2)
+        if (j_next > n) break; // 如果超過 n，就停止
+        sequence.push_back(j_next); // 添加到序列中
+
+        // 更新 j0 和 j1
+        j0 = j1;
+        j1 = j_next;
+    }
+    
+    return sequence;
+}
+
+template <typename T>
+void PmergeMe::execInsert(T& sorted, const T& tmp) {
+    std::vector<int> jacobSeq = getJacobsthal(tmp.size());
+
+    // for (std::vector<int>::const_iterator it = jacobSeq.begin(); it != jacobSeq.end(); ++it) {
+    //     if (*it < tmp.size()) {
+    //         int value = tmp[*it];
+    //         typename T::iterator pos = std::lower_bound(sorted.begin(), sorted.end(), value);
+    //         sorted.insert(pos, value);
+    //     }
+    // }
+	// for (const int& index : jacobSeq)
+	// {
+    //     if (index < tmp.size()) {
+    //         int value = tmp[index];
+    //         typename T::iterator pos = std::lower_bound(sorted.begin(), sorted.end(), value);
+    //         sorted.insert(pos, value);
+    //     }
+    // }
+	for (size_t i = 0; i < tmp.size(); ++i) {
+        int value = tmp[i];
+        typename T::iterator pos = std::lower_bound(sorted.begin(), sorted.end(), value);
+        sorted.insert(pos, value);
+    }
+}
+
 void PmergeMe::mergeInsertSort(std::vector<int>& container)
 {
 	if (container.size() <= 1 )
@@ -134,12 +198,13 @@ void PmergeMe::mergeInsertSort(std::vector<int>& container)
 			sorted.push_back(container[i]);
 	}
 	std::sort(sorted.begin(), sorted.end());
-	for (std::vector<int>::iterator it = tmp.begin(); it != tmp.end(); it++) //++it?
-	{
-		//to check
-		std::vector<int>::iterator pos = std::lower_bound(sorted.begin(), sorted.end(), *it);
-		sorted.insert(pos, *it);
-	}
+	execInsert(sorted, tmp);
+	// for (std::vector<int>::iterator it = tmp.begin(); it != tmp.end(); it++) //++it?
+	// {
+	// 	//to check
+	// 	std::vector<int>::iterator pos = std::lower_bound(sorted.begin(), sorted.end(), *it);
+	// 	sorted.insert(pos, *it);
+	// }
 	container = sorted;
 }
 
@@ -169,11 +234,12 @@ void PmergeMe::mergeInsertSort(std::deque<int>& container)
 			sorted.push_back(container[i]);
 	}
 	std::sort(sorted.begin(), sorted.end());
-	for (std::deque<int>::iterator it = tmp.begin(); it != tmp.end(); it++)
-	{
-		std::deque<int>::iterator pos = std::lower_bound(sorted.begin(), sorted.end(), *it); //Returns an iterator pointing to the first element in the range [first,last) which does not compare less than val.
-		sorted.insert(pos, *it);
-	}
+	execInsert(sorted, tmp);
+	// for (std::deque<int>::iterator it = tmp.begin(); it != tmp.end(); it++)
+	// {
+	// 	std::deque<int>::iterator pos = std::lower_bound(sorted.begin(), sorted.end(), *it); //Returns an iterator pointing to the first element in the range [first,last) which does not compare less than val.
+	// 	sorted.insert(pos, *it);
+	// }
 	container = sorted;
 }
 
