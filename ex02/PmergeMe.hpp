@@ -9,23 +9,23 @@
 # include <algorithm>
 # include <iomanip>
 
+
 class PmergeMe
 {
 	public:
 		PmergeMe();
-		PmergeMe( PmergeMe const & src );
+		PmergeMe(PmergeMe const & src);
 		~PmergeMe();
 		PmergeMe(char *av[]);
-		PmergeMe &		operator=( PmergeMe const & src );
+		PmergeMe & operator=(PmergeMe const & src);
 
-		void	parseInput(char *av[]);
-		void	sortVector();
-		void	sortDeque();
-
-		void	printUnsorted() const;
-		void	printSorted() const;
-		void	printTimeVector() const;
-		void	printTimeDeque() const;
+		void parseInput(char *av[]);
+		void sortVector();
+		void sortDeque();
+		void printUnsorted() const;
+		void printSorted() const;
+		void printTimeVector() const;
+		void printTimeDeque() const;
 
 	private:
 		std::vector<int> vec;
@@ -33,11 +33,16 @@ class PmergeMe
 		double timeVector;
         double timeDeque;
 
-        void mergeInsertSort(std::vector<int>& container);
-        void mergeInsertSort(std::deque<int>& container);
-		std::vector<int> getJacobsthal(int n);
+		// Merge-Insert Sort 的模板函數
 		template <typename T>
-    	void execInsert(T& sorted, const T& tmp);
+		void mergeInsertSort(T& container);
+
+		// 插入排序輔助函數的模板函數
+		template <typename T>
+		void execInsert(T& sorted, const T& tmp);
+
+		// 計算 Jacobsthal 數列的函數
+		std::vector<int> getJacobsthal(int n);
 };
 
 #endif /* ******************************************************** PMERGEME_H */

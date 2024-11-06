@@ -1,4 +1,10 @@
 #include "PmergeMe.hpp"
+#include <algorithm>
+#include <ctime>     // 用於 clock() 計時
+#include <iomanip>
+#include <iostream>
+#include <vector>
+#include <deque>
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -7,10 +13,9 @@ PmergeMe::PmergeMe(): timeVector(0), timeDeque(0)
 {
 }
 
-PmergeMe::PmergeMe( const PmergeMe & src ): vec(src.vec), deq(src.deq), timeVector(src.timeVector), timeDeque(src.timeDeque)
+PmergeMe::PmergeMe(const PmergeMe & src): vec(src.vec), deq(src.deq), timeVector(src.timeVector), timeDeque(src.timeDeque)
 {
 }
-
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
@@ -19,13 +24,12 @@ PmergeMe::~PmergeMe()
 {
 }
 
-
 /*
 ** --------------------------------- OVERLOAD ---------------------------------
 */
-PmergeMe &	PmergeMe::operator=( PmergeMe const & src )
+PmergeMe & PmergeMe::operator=(PmergeMe const & src)
 {
-	if ( this != &src )
+	if (this != &src)
 	{
 		vec = src.vec;
 		deq = src.deq;
@@ -45,7 +49,7 @@ PmergeMe::PmergeMe(char *av[]): timeVector(0), timeDeque(0)
 
 void PmergeMe::parseInput(char* av[])
 {
-	for(int i = 1; av[i]; i++) //++i?
+	for (int i = 1; av[i]; i++)
 	{
 		int num = std::atoi(av[i]);
 		if (num <= 0)
@@ -58,50 +62,50 @@ void PmergeMe::parseInput(char* av[])
 	}
 }
 
-void	PmergeMe::sortVector()
+void PmergeMe::sortVector()
 {
-	std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
+	clock_t start = clock();
 	mergeInsertSort(vec);
-	std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
-	timeVector = std::chrono::duration<double, std::micro>(end - start).count();
+	clock_t end = clock();
+	timeVector = static_cast<double>(end - start) / CLOCKS_PER_SEC * 1e6; // 微秒
 }
 
-void	PmergeMe::sortDeque()
+void PmergeMe::sortDeque()
 {
-	std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
+	clock_t start = clock();
 	mergeInsertSort(deq);
-	std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
-	timeDeque = std::chrono::duration<double, std::micro>(end - start).count();
+	clock_t end = clock();
+	timeDeque = static_cast<double>(end - start) / CLOCKS_PER_SEC * 1e6; // 微秒
 }
 
-void	PmergeMe::printUnsorted() const
+void PmergeMe::printUnsorted() const
 {
-	std::cout << "Before: " << std::endl;
-	for (std::vector<int>::const_iterator it = vec.begin(); it != vec.end(); it++) //++it?
+	std::cout << "Before: ";
+	for (std::vector<int>::const_iterator it = vec.begin(); it != vec.end(); ++it) 
 	{
 		std::cout << *it << " ";
 	}
 	std::cout << std::endl;
 }
 
-void	PmergeMe::printSorted() const
+void PmergeMe::printSorted() const
 {
-	std::cout << "After: " << std::endl;
-	for (std::vector<int>::const_iterator it = vec.begin(); it != vec.end(); it++) //++it?
+	std::cout << "After: ";
+	for (std::vector<int>::const_iterator it = vec.begin(); it != vec.end(); ++it)
 	{
 		std::cout << *it << " ";
 	}
 	std::cout << std::endl;
 }
 
-void	PmergeMe::printTimeVector() const
+void PmergeMe::printTimeVector() const
 {
 	std::cout << "Time to process a range of " << vec.size()
 		<< " elements with std::vector: " 
 		<< std::fixed << std::setprecision(5) << timeVector << " us" << std::endl;
 }
 
-void	PmergeMe::printTimeDeque() const
+void PmergeMe::printTimeDeque() const
 {
 	std::cout << "Time to process a range of " << deq.size()
 		<< " elements with std::deque: " 
@@ -110,142 +114,77 @@ void	PmergeMe::printTimeDeque() const
 
 std::vector<int> PmergeMe::getJacobsthal(int n)
 {
-	// std::vector<int> sequence;
-    // int j1 = 0, j2 = 1;
-
-    // while (j2 <= n)
-	// {
-    //     sequence.push_back(j2);
-    //     int j_next = j2 + 2 * j1;
-    //     j1 = j2;
-    //     j2 = j_next;
-	// }
-	// return sequence;
-
 	std::vector<int> sequence;
-    
-    // 生成 Jacobsthal 數列直到不超過 n
-    int j0 = 0; // J(0)
-    int j1 = 1; // J(1)
+	int j0 = 0;
+	int j1 = 1;
 
-    if (n >= j0) sequence.push_back(j0); // 如果 n >= J(0)，則添加 J(0)
-    if (n >= j1) sequence.push_back(j1); // 如果 n >= J(1)，則添加 J(1)
+	if (n >= j0) sequence.push_back(j0);
+	if (n >= j1) sequence.push_back(j1);
 
-    // 使用迴圈計算後續的 Jacobsthal 數
-    int j_next;
-    for (int i = 2; ; i++) {
-        j_next = j1 + 2 * j0; // J(n) = J(n-1) + 2 * J(n-2)
-        if (j_next > n) break; // 如果超過 n，就停止
-        sequence.push_back(j_next); // 添加到序列中
-
-        // 更新 j0 和 j1
-        j0 = j1;
-        j1 = j_next;
-    }
-    
-    return sequence;
+	int j_next;
+	for (int i = 2; ; i++) {
+		j_next = j1 + 2 * j0;
+		if (j_next > n) break;
+		sequence.push_back(j_next);
+		j0 = j1;
+		j1 = j_next;
+	}
+	return sequence;
 }
 
 template <typename T>
-void PmergeMe::execInsert(T& sorted, const T& tmp) {
-    std::vector<int> jacobSeq = getJacobsthal(tmp.size());
-
-    // for (std::vector<int>::const_iterator it = jacobSeq.begin(); it != jacobSeq.end(); ++it) {
-    //     if (*it < tmp.size()) {
-    //         int value = tmp[*it];
-    //         typename T::iterator pos = std::lower_bound(sorted.begin(), sorted.end(), value);
-    //         sorted.insert(pos, value);
-    //     }
-    // }
-	// for (const int& index : jacobSeq)
-	// {
-    //     if (index < tmp.size()) {
-    //         int value = tmp[index];
-    //         typename T::iterator pos = std::lower_bound(sorted.begin(), sorted.end(), value);
-    //         sorted.insert(pos, value);
-    //     }
-    // }
-	for (size_t i = 0; i < tmp.size(); ++i) {
-        int value = tmp[i];
-        typename T::iterator pos = std::lower_bound(sorted.begin(), sorted.end(), value);
-        sorted.insert(pos, value);
-    }
-}
-
-void PmergeMe::mergeInsertSort(std::vector<int>& container)
+void PmergeMe::execInsert(T& sorted, const T& tmp) 
 {
-	if (container.size() <= 1 )
-		return ;
-
-	std::vector<int>sorted;
-	std::vector<int>tmp;
-	for (int i = 0; i < container.size(); i += 2)
+	std::vector<int> jacobSeq = getJacobsthal(tmp.size());
+	typename T::const_iterator it = tmp.begin();
+	for (; it != tmp.end(); ++it)
 	{
-		if (i + 1 < container.size())
+		int value = *it;
+
+		// 使用 lower_bound 尋找插入位置，避免重複調用 binary_search
+		typename T::iterator pos = std::lower_bound(sorted.begin(), sorted.end(), value);
+		if (pos == sorted.end() || *pos != value)
 		{
-			if (container[i] < container[i + 1])
-			{
-				sorted.push_back(container[i]); //small one
-				tmp.push_back(container[i + 1]);
-			}
-			else
-			{
-				sorted.push_back(container[i + 1]); //small one
-				tmp.push_back(container[i]);
-			}
+			sorted.insert(pos, value);
 		}
-		else
-			sorted.push_back(container[i]);
 	}
-	std::sort(sorted.begin(), sorted.end());
-	execInsert(sorted, tmp);
-	// for (std::vector<int>::iterator it = tmp.begin(); it != tmp.end(); it++) //++it?
-	// {
-	// 	//to check
-	// 	std::vector<int>::iterator pos = std::lower_bound(sorted.begin(), sorted.end(), *it);
-	// 	sorted.insert(pos, *it);
-	// }
-	container = sorted;
 }
 
-void PmergeMe::mergeInsertSort(std::deque<int>& container)
+template <typename T>
+void PmergeMe::mergeInsertSort(T& container)
 {
 	if (container.size() <= 1)
-		return ;
-	
-	std::deque<int> sorted;
-	std::deque<int> tmp;
-	for (int i = 0; i < container.size(); i += 2)
+		return;
+
+	T sorted;
+	T tmp;
+	typename T::iterator it = container.begin();
+	for (; it != container.end(); it += 2)
 	{
-		if (i + 1 < container.size())
+		typename T::iterator next = it;
+		if (++next != container.end())
 		{
-			if (container[i] < container[i + 1])
+			if (*it < *next)
 			{
-				sorted.push_back(container[i]);
-				tmp.push_back(container[i + 1]);
+				sorted.push_back(*it);
+				tmp.push_back(*next);
 			}
 			else
 			{
-				sorted.push_back(container[i + 1]);
-				tmp.push_back(container[i]);
+				sorted.push_back(*next);
+				tmp.push_back(*it);
 			}
 		}
 		else
-			sorted.push_back(container[i]);
+		{
+			sorted.push_back(*it);
+		}
 	}
 	std::sort(sorted.begin(), sorted.end());
 	execInsert(sorted, tmp);
-	// for (std::deque<int>::iterator it = tmp.begin(); it != tmp.end(); it++)
-	// {
-	// 	std::deque<int>::iterator pos = std::lower_bound(sorted.begin(), sorted.end(), *it); //Returns an iterator pointing to the first element in the range [first,last) which does not compare less than val.
-	// 	sorted.insert(pos, *it);
-	// }
 	container = sorted;
 }
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
-
-
-/* ************************************************************************** */
