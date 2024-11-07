@@ -19,6 +19,8 @@ class PmergeMe
 
 		void printUnsorted() const;
 		void printSorted() const;
+		void printTimeVector() const;
+		void printTimeDeque() const;
 
 		class FJvector{
 			public:
@@ -39,8 +41,8 @@ class PmergeMe
 				void parseInput(char **av);
 				void makePairs();
 				void sortPairs();
-				void SortMergeParis(std::vector<std::pair<int, int> > &tab, int start, int end);
-				void merge(std::vector<std::pair<int, int> > &tab, int start, int mid, int end);
+				void SortMergePairs(std::vector<std::pair<int, int> > &tab, int start, int end);
+				void mergeSortedPairs(std::vector<std::pair<int, int> > &tab, int start, int mid, int end);
 				void splitSortedPending();
 				void doInsertOrder();
 				int binarySearchPos(int pendNum, int start, int end);
@@ -66,13 +68,22 @@ class PmergeMe
 				void parseInput(char **av);
 				void makePairs();
 				void sortPairs();
-				void SortMergeParis(std::deque<std::pair<int, int> > &tab, int start, int end);
-				void merge(std::deque<std::pair<int, int> > &tab, int start, int mid, int end);
+				void SortMergePairs(std::deque<std::pair<int, int> > &tab, int start, int end);
+				void mergeSortedPairs(std::deque<std::pair<int, int> > &tab, int start, int mid, int end);
 				void splitSortedPending();
 				void doInsertOrder();
 				int binarySearchPos(int pendNum, int start, int end);
 				void insertPend();
 		};
+
+		void runAndTimeVector(char **av);
+		void runAndTimeDeque(char **av);
+
+	private:
+		FJvector fjv;
+		FJdeque fjd;
+		double timeVector;
+		double timeDeque;
 };
 
 #endif /* ******************************************************** PMERGEME_H */

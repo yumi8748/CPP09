@@ -15,22 +15,30 @@ PmergeMe::PmergeMe()
 
 PmergeMe::PmergeMe(const PmergeMe & src)
 {
+	*this = src;
+	return ;
 }
 
-PmergeMe::FJvector()
+PmergeMe::FJvector::FJvector()
 {
+	return ;
 }
 
-PmergeMe::FJvector(const FJvector & src)
+PmergeMe::FJvector::FJvector(const FJvector & src)
 {
+	*this = src;
+	return ;
 }
 
-PmergeMe::FJdeque()
+PmergeMe::FJdeque::FJdeque()
 {
+	return ;
 }
 
-PmergeMe::FJdeque(const FJdeque & src)
+PmergeMe::FJdeque::FJdeque(const FJdeque & src)
 {
+	*this = src;
+	return ;
 }
 
 /*
@@ -40,11 +48,11 @@ PmergeMe::~PmergeMe()
 {
 }
 
-PmergeMe::~FJvector()
+PmergeMe::FJvector::~FJvector()
 {
 }
 
-PmergeMe::~FJdeque()
+PmergeMe::FJdeque::~FJdeque()
 {
 }
 
@@ -58,14 +66,14 @@ PmergeMe & PmergeMe::operator=(PmergeMe const & src)
 	return *this;
 }
 
-PmergeMe & FJvector::operator=(FJvector const & src)
+PmergeMe::FJvector &PmergeMe::FJvector::operator=(FJvector const & src)
 {
 	if (this != &src)
 		return *this;
 	return *this;
 }
 
-PmergeMe & FJdeque::operator=(FJdeque const & src)
+PmergeMe::FJdeque &PmergeMe::FJdeque::operator=(FJdeque const & src)
 {
 	if (this != &src)
 		return *this;
@@ -76,7 +84,7 @@ PmergeMe & FJdeque::operator=(FJdeque const & src)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void PmergeMe::parseInput(char **av)
+void PmergeMe::FJvector::parseInput(char **av)
 {
 	for (unsigned int i = 1; av[i]; i++)
 	{
@@ -86,25 +94,24 @@ void PmergeMe::parseInput(char **av)
 			std::cerr << "Error: Only positive integer allowed." << std::endl;
 			exit(1);
 		}
-		vec.push_back(num);
-		deq.push_back(num);
+		this->input.push_back(num);
 	}
 }
 
-void PmergeMe::printUnsorted() const
+void PmergeMe::printUnsorted() const //!to fix
 {
 	std::cout << "Before: ";
-	for (std::vector<int>::const_iterator it = vec.begin(); it != vec.end(); ++it) 
+	for (std::vector<int>::const_iterator it = input.begin(); it != input.end(); ++it) 
 	{
 		std::cout << *it << " ";
 	}
 	std::cout << std::endl;
 }
 
-void PmergeMe::printSorted() const
+void PmergeMe::printSorted() const //!to fix
 {
 	std::cout << "After: ";
-	for (std::vector<int>::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	for (std::vector<int>::const_iterator it = sorted.begin(); it != sorted.end(); ++it)
 	{
 		std::cout << *it << " ";
 	}
@@ -114,13 +121,13 @@ void PmergeMe::printSorted() const
 void	PmergeMe::FJvector::execFJ(char **av)
 {
 	parseInput(av);
-	if (this->inpit.size() == 1)
+	if (this->input.size() == 1)
 		this->sorted.push_back(this->input.front());
 	else
 	{
 		this->makePairs();
 		this->sortPairs();
-		this->SortMergeParis();
+		this->SortMergePairs(this->pairs, 0, this->pairs.size() - 1);
 		this->splitSortedPending();
 		this->doInsertOrder();
 		this->insertPend();
@@ -133,7 +140,7 @@ void PmergeMe::FJvector::parseInput(char **av)
 		this->input.push_back(atoi(av[i]));
 }
 
-void PmergeMe::FJvector::makePairs();
+void PmergeMe::FJvector::makePairs()
 {
 	for (unsigned int i=0; i + 1 < this->input.size(); i += 2)
 		this->pairs.push_back(std::make_pair(this->input.at(i), this->input.at(i + 1)));
@@ -148,12 +155,12 @@ void PmergeMe::FJvector::sortPairs()
 	}
 }
 
-void PmergeMe::FJvector::mergeSortedParis(std::vector<std::pair<int, int> > &tab, int start, int mid, int end)
+void PmergeMe::FJvector::mergeSortedPairs(std::vector<std::pair<int, int> > &tab, int start, int mid, int end)
 {
 	std::vector<std::pair<int, int>> leftArr(tab.begin() + start, tab.begin() + mid + 1);
 	std::vector<std::pair<int, int>> rightArr(tab.begin() + mid + 1, tab.begin() + end + 1);
-	unsgined int wholeI = static_cast<unsigned int>(start);
-	unsigned int leftI = 0; rightI = 0;
+	unsigned int wholeI = static_cast<unsigned int>(start);
+	unsigned int leftI = 0, rightI = 0;
 
 	while (leftI < leftArr.size() && rightI < rightArr.size()) //!
 	{
@@ -168,21 +175,21 @@ void PmergeMe::FJvector::mergeSortedParis(std::vector<std::pair<int, int> > &tab
 		tab[wholeI++] = rightArr[rightI++];
 }
 
-void PmergeMe::FJvector::SortMergeParis(std::vector<std::pair<int, int> > &tab, int start, int end)
+void PmergeMe::FJvector::SortMergePairs(std::vector<std::pair<int, int> > &tab, int start, int end)
 {
 	int mid = start + (end - start / 2);
 	if (start >= end)
 		return ;
-	this->SortMergeParis(tab, start, mid);
-	this->SortMergeParis(tab, start + 1, end);
-	this->mergeSortedParis(tab, start, mid, end);
+	this->SortMergePairs(tab, start, mid);
+	this->SortMergePairs(tab, start + 1, end);
+	this->mergeSortedPairs(tab, start, mid, end);
 }
 
 void PmergeMe::FJvector::splitSortedPending()
 {
 	this->sorted.push_back(this->pairs[0].first); //smaller one
 	for (unsigned int i=1; i < this->pairs.size(); i++)
-		this->pend.push_back(this->pairs[i].second); //bigger to pending
+		this->pending.push_back(this->pairs[i].second); //bigger to pending
 }
 
 std::vector<int> generateJacobsthal(int n) //extra
@@ -208,29 +215,118 @@ std::vector<int> generateJacobsthal(int n) //extra
 void PmergeMe::FJvector::doInsertOrder()
 {
 	int lastInsertedNbr = 1;
-	std::vector<int> = jacobsthal = generateJacobsthal(this->pending.size());
+	std::vector<int> jacobsthal = generateJacobsthal(this->pending.size());
 	for (unsigned int i=0; i < jacobsthal.size(); i++)
 	{
 		int jacob = jacobsthal[i];
 		this->insertOrder.push_back(jacob);
 		//
 		int pos = jacob - 1;
-		while 
+		while (pos > lastInsertedNbr)
+			this->insertOrder.push_back(pos--);
+		lastInsertedNbr = jacob;
 	}
 }
 
-int PmergeMe::FJvector::binarySearchPos(int pendNum, int start, int end);
-void PmergeMe::FJvector::insertPend();
+int PmergeMe::FJvector::binarySearchPos(int pendNum, int start, int end)
+{
+	int mid = (start + end) / 2;
+
+	if (end <= start)
+		return (pendNum > this->sorted.at(start) ? (start + 1) : start);
+	if (pendNum == this->sorted.at(mid))
+		return (mid + 1);
+	if (pendNum > this->sorted.at(mid))
+		return (this->binarySearchPos(pendNum, mid + 1, end));
+	return (this->binarySearchPos(pendNum, start, mid - 1));
+}
+
+void PmergeMe::FJvector::insertPend()
+{
+	for (unsigned int i=0; i < this->insertOrder.size(); i++)
+	{
+		int pendVal = this->pending[this->insertOrder[i]];
+		int pos = binarySearchPos(pendVal, 0, this->sorted.size() - 1);
+		this->sorted.insert(this->sorted.begin() + pos, pendVal);
+	}
+}
 
 
 
-void	PmergeMe::FJdeque::execFJ(char **av);
-void PmergeMe::FJdeque::parseInput(char **av);
-void PmergeMe::FJdeque::makePairs();
-void PmergeMe::FJdeque::sortPairs();
-void PmergeMe::FJdeque::SortMergeParis(std::deque<std::pair<int, int> > &tab, int start, int end);
-void PmergeMe::FJdeque::mergeSortedParis(std::deque<std::pair<int, int> > &tab, int start, int mid, int end);
-void PmergeMe::FJdeque::splitSortedPending();
-void PmergeMe::FJdeque::doInsertOrder();
-int PmergeMe::FJdeque::binarySearchPos(int pendNum, int start, int end);
-void PmergeMe::FJdeque::insertPend();
+void PmergeMe::FJdeque::execFJ(char **av)
+{
+
+}
+
+void PmergeMe::FJdeque::parseInput(char **av)
+{
+
+}
+
+void PmergeMe::FJdeque::makePairs()
+{
+
+}
+
+void PmergeMe::FJdeque::sortPairs()
+{
+
+}
+
+void PmergeMe::FJdeque::SortMergePairs(std::deque<std::pair<int, int> > &tab, int start, int end)
+{
+
+}
+
+void PmergeMe::FJdeque::mergeSortedPairs(std::deque<std::pair<int, int> > &tab, int start, int mid, int end)
+{
+
+}
+
+void PmergeMe::FJdeque::splitSortedPending()
+{
+
+}
+
+void PmergeMe::FJdeque::doInsertOrder()
+{
+
+}
+
+int PmergeMe::FJdeque::binarySearchPos(int pendNum, int start, int end)
+{
+
+}
+
+void PmergeMe::FJdeque::insertPend()
+{
+
+}
+
+void PmergeMe::runAndTimeVector(char **av) {
+    clock_t start = clock();
+    fjv.execFJ(av);  // 假設這個函數執行排序並將結果存儲於 fjv.sorted
+    clock_t end = clock();
+    timeVector = static_cast<double>(end - start) / CLOCKS_PER_SEC;
+}
+
+void PmergeMe::runAndTimeDeque(char **av) {
+    clock_t start = clock();
+    fjd.execFJ(av);  // 假設這個函數執行排序並將結果存儲於 fjd.sorted
+    clock_t end = clock();
+    timeDeque = static_cast<double>(end - start) / CLOCKS_PER_SEC;
+}
+
+void PmergeMe::runAndTimeVector(char **av) {
+    clock_t start = clock();
+    fjv.execFJ(av);  // 假設這個函數執行排序並將結果存儲於 fjv.sorted
+    clock_t end = clock();
+    timeVector = static_cast<double>(end - start) / CLOCKS_PER_SEC;
+}
+
+void PmergeMe::runAndTimeDeque(char **av) {
+    clock_t start = clock();
+    fjd.execFJ(av);  // 假設這個函數執行排序並將結果存儲於 fjd.sorted
+    clock_t end = clock();
+    timeDeque = static_cast<double>(end - start) / CLOCKS_PER_SEC;
+}
