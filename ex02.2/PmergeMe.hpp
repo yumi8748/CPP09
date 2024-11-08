@@ -17,10 +17,10 @@ class PmergeMe
 		~PmergeMe();
 		PmergeMe & operator=(PmergeMe const & src);
 
-		void printUnsorted() const;
-		void printSorted() const;
 		void printTimeVector() const;
 		void printTimeDeque() const;
+		void printUnsorted() const;
+       	void printSorted() const;
 
 		class FJvector{
 			public:
@@ -30,14 +30,6 @@ class PmergeMe
 				FJvector & operator=(FJvector const & src);
 
 				void	execFJ(char **av);
-
-			private:
-				std::vector<int> input;
-				std::vector<std::pair<int, int> > pairs;
-				std::vector<int> sorted;
-				std::vector<int> pending;
-				std::vector<int> insertOrder;
-
 				void parseInput(char **av);
 				void makePairs();
 				void sortPairs();
@@ -45,8 +37,18 @@ class PmergeMe
 				void mergeSortedPairs(std::vector<std::pair<int, int> > &tab, int start, int mid, int end);
 				void splitSortedPending();
 				void doInsertOrder();
+				std::vector<int> generateJacobsthal(int n);
 				int binarySearchPos(int pendNum, int start, int end);
 				void insertPend();
+				const std::vector<int>& getInput() const { return input; }
+				const std::vector<int>& getSorted() const { return sorted; }
+
+			private:
+				std::vector<int> input;
+				std::vector<std::pair<int, int> > pairs;
+				std::vector<int> sorted;
+				std::vector<int> pending;
+				std::vector<int> insertOrder;
 		};
 
 		class FJdeque{
@@ -57,14 +59,8 @@ class PmergeMe
 				FJdeque & operator=(FJdeque const & src);
 
 				void	execFJ(char **av);
-
-			private:
-				std::deque<int> input;
-				std::deque<std::pair<int, int> > pairs;
-				std::deque<int> sorted;
-				std::deque<int> pending;
-				std::deque<int> insertOrder;
-
+				const std::deque<int>& getInput() const { return input; }
+				const std::deque<int>& getSorted() const { return sorted; }
 				void parseInput(char **av);
 				void makePairs();
 				void sortPairs();
@@ -72,8 +68,16 @@ class PmergeMe
 				void mergeSortedPairs(std::deque<std::pair<int, int> > &tab, int start, int mid, int end);
 				void splitSortedPending();
 				void doInsertOrder();
+				std::deque<int> generateJacobsthal(int n);
 				int binarySearchPos(int pendNum, int start, int end);
 				void insertPend();
+
+			private:
+				std::deque<int> input;
+				std::deque<std::pair<int, int> > pairs;
+				std::deque<int> sorted;
+				std::deque<int> pending;
+				std::deque<int> insertOrder;
 		};
 
 		void runAndTimeVector(char **av);
@@ -82,8 +86,8 @@ class PmergeMe
 	private:
 		FJvector fjv;
 		FJdeque fjd;
-		double timeVector;
-		double timeDeque;
+		double timeVector = 0.0;
+		double timeDeque = 0.0;
 };
 
 #endif /* ******************************************************** PMERGEME_H */

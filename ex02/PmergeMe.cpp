@@ -54,7 +54,7 @@ void PmergeMe::parseInput(char* av[])
 		int num = std::atoi(av[i]);
 		if (num <= 0)
 		{
-			std::cerr << "Error: Only positive integer allowed." << std::endl;
+			std::cerr << "Error: Invalid input!" << std::endl;
 			exit(1);
 		}
 		vec.push_back(num);
