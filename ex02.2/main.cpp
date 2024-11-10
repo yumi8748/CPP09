@@ -11,12 +11,14 @@ int main(int ac, char **av)
         av++;  // 跳過程式名稱
         PmergeMe pmm;
 
-        pmm.printUnsorted();
         
         // 計時並顯示 `std::vector` 的處理時間
         pmm.runAndTimeVector(av);
+        pmm.runAndTimeDeque(av);
+        pmm.printUnsorted();
         pmm.printSorted();
         pmm.printTimeVector();
+        pmm.printTimeDeque();
 
         // 計時並顯示 `std::deque` 的處理時間
         // pmm.runAndTimeDeque(av);
