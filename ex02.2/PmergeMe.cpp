@@ -175,6 +175,19 @@ void PmergeMe::FJvector::mergeSortedPairs(std::vector<std::pair<int, int>>& tab,
     unsigned int wholeI = static_cast<unsigned int>(start);
     unsigned int leftI = 0, rightI = 0;
 
+     // Debug: Print initial subarrays
+    std::cout << std::endl;
+    std::cout << "Merging pairs between indices " << start << " and " << end << ":\n";
+    std::cout << "Left array: ";
+    for (size_t i = 0; i < leftArr.size(); i++) {
+        std::cout << "(" << leftArr[i].first << ", " << leftArr[i].second << ") ";
+    }
+    std::cout << "\nRight array: ";
+    for (size_t i = 0; i < rightArr.size(); i++) {
+        std::cout << "(" << rightArr[i].first << ", " << rightArr[i].second << ") ";
+    }
+    std::cout << std::endl;
+
     while (leftI < leftArr.size() && rightI < rightArr.size())
     {
         if (leftArr[leftI].first <= rightArr[rightI].first)
@@ -186,6 +199,13 @@ void PmergeMe::FJvector::mergeSortedPairs(std::vector<std::pair<int, int>>& tab,
         tab[wholeI++] = leftArr[leftI++];
     while (rightI < rightArr.size())
         tab[wholeI++] = rightArr[rightI++];
+        // Debug: Print the result of merging
+    std::cout << "After merging: ";
+    for (int i = start; i <= end; ++i) {
+        std::cout << "(" << tab[i].first << ", " << tab[i].second << ") ";
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
 }
 
 void PmergeMe::FJvector::SortMergePairs(std::vector<std::pair<int, int>>& tab, int start, int end)
@@ -250,12 +270,13 @@ int PmergeMe::FJvector::binarySearchPos(int pendNum, int start, int end)
     int mid = (start + end) / 2;
 
     if (end <= start)
-        return (pendNum > sorted.at(start) ? (start + 1) : start);
+        return (pendNum > sorted[start]) ? (start + 1) : start;
     if (pendNum == sorted[mid])
         return (mid + 1);
-    if (pendNum > sorted[mid])
+    else if (pendNum > sorted[mid])
         return (binarySearchPos(pendNum, mid + 1, end));
-    return (binarySearchPos(pendNum, start, mid - 1));
+    else
+        return (binarySearchPos(pendNum, start, mid - 1));
 }
 
 void PmergeMe::FJvector::insertPend()
@@ -263,20 +284,47 @@ void PmergeMe::FJvector::insertPend()
     if (pending.empty() || insertOrder.empty())
         return;
 
-    // int insertTotal = 0;
-    for (int pos : insertOrder)
+    // // int insertTotal = 0;
+    // for (int pos : insertOrder)
+    // {
+    //     if (pos >= pending.size()) continue;  // 防止越界
+    //     int val = pending[pos];
+    //     // int end = sorted.size() - 1;
+    //     int insertPos = binarySearchPos(val, 0, sorted.size() - 1);
+    //     sorted.insert(sorted.begin() + insertPos, val);
+    //     // insertTotal++;
+    //     // Debug: Show sorted array after each insertion
+    //     std::cout << "Inserted " << val << " at position " << insertPos << ": ";
+    //     for (int s : sorted) std::cout << s << " ";
+    //     std::cout << std::endl;
+    // }
+    std::vector<int>::size_type i;
+    for (i = 0; i < insertOrder.size(); ++i)
     {
+        int pos = insertOrder[i];
+        if (pos >= pending.size()) continue; // 防止越界
+        
         int val = pending[pos];
-        // int end = sorted.size() - 1;
         int insertPos = binarySearchPos(val, 0, sorted.size() - 1);
         sorted.insert(sorted.begin() + insertPos, val);
-        // insertTotal++;
+
+        // 移除已插入的元素以防重複
+        pending.erase(pending.begin() + pos);
+        // 更新插入順序以考慮刪除的元素
+        for (std::vector<int>::size_type j = i + 1; j < insertOrder.size(); ++j) {
+            if (insertOrder[j] > pos) --insertOrder[j];
+        }
     }
     if (input.size() % 2 == 1)
     {
         int val = input.back();
         int insertPos = binarySearchPos(val, 0, sorted.size() - 1);
         sorted.insert(sorted.begin() + insertPos, val);
+        // Debug: Show sorted array after inserting the last unpaired element
+        std::cout << "Inserted last unpaired " << val << " at position " << insertPos << ": ";
+        for (int s : sorted) std::cout << s << " ";
+        std::cout << std::endl;
+        std::cout << std::endl;
     }
 }
 
