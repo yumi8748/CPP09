@@ -42,7 +42,7 @@ BitcoinExchange &				BitcoinExchange::operator=( BitcoinExchange const & other )
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
-float BitcoinExchange::getExchangeRate(const std::string &date) const{					//map>
+float BitcoinExchange::getExchangeRate(const std::string &date) const{					//map>store elements formed by a combination of a key value and a mapped value
 	std::map<std::string, float>::const_iterator it = exchangeRate.lower_bound(date); //lower_bound>it returns an iterator to the first element that is greater than or equal to the given key.
 	if (it == exchangeRate.end() || it->first != date)
 	{

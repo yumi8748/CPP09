@@ -14,6 +14,11 @@ int main(int ac, char **av) {
             std::cerr << "Error: could not open file." << std::endl;
             return 1;
         }
+        char c;
+    if (!(inputFile >> c)) {
+        std::cerr << "Error: no permission to read file or file is empty." << std::endl;
+        return 1;
+    }
 
         std::string line;
         while (std::getline(inputFile, line)) {

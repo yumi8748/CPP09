@@ -6,6 +6,7 @@
 # include <map>
 # include <fstream>
 # include <sstream>
+# include <limits>
 
 class BitcoinExchange
 {
