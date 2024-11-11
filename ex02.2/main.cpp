@@ -14,6 +14,7 @@ int main(int ac, char **av)
         
         // 計時並顯示 `std::vector` 的處理時間
         pmm.runAndTimeVector(av);
+        std::cout << "----------------------------------------" << std::endl;
         pmm.runAndTimeDeque(av);
         pmm.printUnsorted();
         pmm.printSorted();
